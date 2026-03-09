@@ -30,7 +30,7 @@ app.post("/notes", async (req, res) => {
 });
 
 app.get("/notes", async (req, res) => {
-    const notes = await noteModel.find({ title: "test 1"});
+    const notes = await noteModel.find();
 
     res.status(200).json({
         message: "Notes fetched successfully",
@@ -62,6 +62,16 @@ app.patch("/notes/:id", async (req, res) => {
 });
 
 // Task - Create a GET api for /notes/:id to fetch a single note by id
-// Task learn about CORS and implement it in your server
+app.get("/notes/:id", async (req, res) => {
+    const note = await noteModel.findById(req.params.id);
+
+    res.status(200).json({
+        message: "Note fetched successfully",
+        note: note
+    })
+});
+
+// Task - learn about CORS and implement it in your server
+// Task - Learn difference between findOne and find in mongoose and implement findOne in your code 
 
 export default app;
