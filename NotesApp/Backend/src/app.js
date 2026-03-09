@@ -1,13 +1,14 @@
 // server create karna
-
 import express from "express";
 import morgan from "morgan";
 import noteModel from "./models/note.model.js";
+import cors from "cors";
 
 const app = express();
 
 app.use(express.json());
 app.use(morgan("dev"));
+app.use(cors());
 
 // server ko config karna
 app.get("/", (req, res) => {
@@ -49,10 +50,11 @@ app.delete("/notes/:id", async (req, res) => {
 
 app.patch("/notes/:id", async (req, res) => {
     const id = req.params.id;
+    const { title } = req.body;
     const { description } = req.body;
 
     await noteModel.findByIdAndUpdate(id, {
-        description: description
+        title, description
     });
 
     res.status(200).json({
