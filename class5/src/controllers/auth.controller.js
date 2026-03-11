@@ -1,5 +1,6 @@
 import userModel from "../models/user.model.js";
 import jwt from "jsonwebtoken";
+import { config } from "../config/config.js";
 
 export async function register(req, res) {
     const { email, password } = req.body;
@@ -13,7 +14,7 @@ export async function register(req, res) {
             email: user.email,
             id: user._id,
         },
-        process.env.JWT_SECRET
+        config.JWT_SECRET
     )
 
     res.status(201).json({
@@ -25,7 +26,7 @@ export async function register(req, res) {
 export async function getMe(req, res) {
     const { token } = req.body;
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, config.JWT_SECRET);
 
     const user = await userModel.findById(decoded.id);
 

@@ -4,7 +4,8 @@ dotenv.config();
 
 export const config = {
     MONGO_URI: process.env.MONGO_URI,
-    PORT: process.env.PORT || 3000
+    PORT: process.env.PORT || 3000,
+    JWT_SECRET: process.env.JWT_SECRET,
 }
 
 // Config file is used to store environment variables and configuration settings for the application. 
