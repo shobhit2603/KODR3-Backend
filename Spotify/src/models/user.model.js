@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
   userType: {
     type: String,
     enum: ["user", "artist"],
-    required: true,
+    default: "user",
   },
 });
 

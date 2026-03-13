@@ -28,9 +28,17 @@ export const register = async (req, res) => {
   res.status(201).json({ message: "User registered successfully", user });
 };
 
+export const login = async (req, res) => {
+  const { email, password } = req.body;
+
+};
+
 export const getMe = async (req, res) => {
   const { token } = req.cookies;
+
   const decoded = jwt.verify(token, config.JWT_SECRET);
+
   const user = await User.findById(decoded.id);
-  res.status(200).json({ user });
+  
+  res.status(200).json({ decoded });
 };
