@@ -31,6 +31,38 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   const { email, password } = req.body;
 
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  const isPasswordValid = await user.comparePassword(password);
+
+  if (!isPasswordValid) {
+    return res.status(401).json({ message: "Invalid password" });
+  }
+
+  const token = jwt.sign(
+    {
+      id: user._id,
+      email: user.email,
+      userType: user.userType,
+    },
+    config.JWT_SECRET,
+    {
+      expiresIn: "1h",
+    },
+  );
+
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "strict",
+    maxAge: 1000 * 60 * 60,
+  });
+
+  res.status(200).json({ message: "User logged in successfully", user });
 };
 
 export const getMe = async (req, res) => {
@@ -39,6 +71,6 @@ export const getMe = async (req, res) => {
   const decoded = jwt.verify(token, config.JWT_SECRET);
 
   const user = await User.findById(decoded.id);
-  
+
   res.status(200).json({ decoded });
 };

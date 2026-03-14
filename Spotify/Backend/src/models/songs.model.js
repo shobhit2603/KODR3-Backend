@@ -13,7 +13,7 @@ const songSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  thumbnailUrl: {
+  posterUrl: {
     type: String,
     required: true,
   },
