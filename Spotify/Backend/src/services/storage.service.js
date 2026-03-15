@@ -8,12 +8,12 @@ const imagekit = new ImageKit({
 });
 
 export async function uploadFile(buffer, fileName) {
-  const result = await imagekit.files.upload({
-    file: buffer,
+  const fileResult = await imagekit.files.upload({
+    file: await ImageKit.toFile(buffer, fileName),
     fileName: fileName,
     folder: "/songs",
   });
-  return result;
+  return fileResult;
 }
 
 export async function deleteFile(fileId) {

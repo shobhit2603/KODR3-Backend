@@ -1,4 +1,4 @@
-import jwt, { decode } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { config } from "../config/config.js";
 
 export async function checkArtist(req, res, next) {
@@ -11,13 +11,22 @@ export async function checkArtist(req, res, next) {
     });
   }
 
-  const decoded = jwt.verify(token, config.JWT_SECRET);
+  try {
+    const decoded = jwt.verify(token, config.JWT_SECRET);
 
-  if (decoded.userType !== "artist") {
-    return res.status(403).json({
-      message: "Forbidden",
+    if (decoded.userType !== "artist") {
+      return res.status(403).json({
+        message: "Forbidden",
+        success: false,
+      });
+    }
+
+    req.user = decoded;
+    next();
+  } catch (error) {
+    return res.status(401).json({
+      message: "Invalid Token",
       success: false,
     });
   }
-  next();
 }

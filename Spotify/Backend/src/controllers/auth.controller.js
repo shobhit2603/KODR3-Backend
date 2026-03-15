@@ -1,10 +1,21 @@
-import { User } from "../models/user.model.js";
+import userModel from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 import { config } from "../config/config.js";
+import crypto from "crypto";
 
 export const register = async (req, res) => {
-  const { email, password, userType } = req.body;
-  const user = await User.create({ email, password, userType });
+  const { email, password, userType = "user" } = req.body;
+
+  const passwordHash = crypto
+    .createHash("sha256")
+    .update(password)
+    .digest("hex");
+
+  const user = await userModel.create({
+    email,
+    password: passwordHash,
+    userType,
+  });
 
   const token = jwt.sign(
     {
@@ -31,16 +42,23 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   const { email, password } = req.body;
 
-  const user = await User.findOne({ email });
+  const user = await userModel.findOne({ email });
 
   if (!user) {
-    return res.status(404).json({ message: "User not found" });
+    return res.status(404).json({ message: "User not found", success: false });
   }
 
-  const isPasswordValid = await user.comparePassword(password);
+  const passwordHash = crypto
+    .createHash("sha256")
+    .update(password)
+    .digest("hex");
+
+  const isPasswordValid = user.password === passwordHash;
 
   if (!isPasswordValid) {
-    return res.status(401).json({ message: "Invalid password" });
+    return res
+      .status(401)
+      .json({ message: "Invalid password", success: false });
   }
 
   const token = jwt.sign(
@@ -70,7 +88,9 @@ export const getMe = async (req, res) => {
 
   const decoded = jwt.verify(token, config.JWT_SECRET);
 
-  const user = await User.findById(decoded.id);
-
-  res.status(200).json({ decoded });
+  res.status(200).json({
+    message: "User fetched successfully",
+    success: true,
+    user: decoded,
+  });
 };
