@@ -84,13 +84,31 @@ export const login = async (req, res) => {
 };
 
 export const getMe = async (req, res) => {
-  const { token } = req.cookies;
+  try {
+    const { token } = req.cookies;
 
-  const decoded = jwt.verify(token, config.JWT_SECRET);
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized", success: false });
+    }
 
-  res.status(200).json({
-    message: "User fetched successfully",
-    success: true,
-    user: decoded,
+    const decoded = jwt.verify(token, config.JWT_SECRET);
+
+    res.status(200).json({
+      message: "User fetched successfully",
+      success: true,
+      user: decoded,
+    });
+  } catch (error) {
+    return res.status(401).json({ message: "Invalid token", success: false });
+  }
+};
+
+export const logout = async (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "strict",
   });
+
+  res.status(200).json({ message: "User logged out successfully", success: true });
 };

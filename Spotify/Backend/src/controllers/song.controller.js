@@ -28,3 +28,18 @@ export async function uploadSong(req, res) {
     song,
   });
 }
+
+export async function getAllSongs(req, res) {
+  try {
+    const songs = await songModel.find();
+    res.status(200).json({
+      success: true,
+      songs,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "An error occurred while fetching songs",
+      success: false,
+    });
+  }
+}

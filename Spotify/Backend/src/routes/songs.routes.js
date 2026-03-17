@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { uploadSong } from "../controllers/song.controller.js";
+import { uploadSong, getAllSongs } from "../controllers/song.controller.js";
 import multer from "multer";
 import { checkArtist } from "../middleware/auth.middleware.js";
 
@@ -11,7 +11,7 @@ const songsRouter = Router();
 songsRouter.post("/", checkArtist, upload.single("song"), uploadSong);
 
 // GET /api/songs
-// songsRouter.get("/", getAllSongs);
+songsRouter.get("/", getAllSongs);
 
 // DELETE /api/songs/delete/:songId
 // songsRouter.delete("/delete/:id", checkArtist, deleteSong);

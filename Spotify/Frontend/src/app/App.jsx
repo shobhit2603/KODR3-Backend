@@ -1,12 +1,18 @@
 import { RouterProvider } from "react-router"
 import { router } from "./routes/app.routes"
-import { AuthProvider } from "../auth.context"
+import { useAuth } from "../hooks/useAuth"
+import { useEffect } from "react"
 
 function App() {
+  const { handleGetMe } = useAuth();
+
+  useEffect(() => {
+    handleGetMe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
-    <AuthProvider>
-      <RouterProvider router={router} />
-    </AuthProvider>
+    <RouterProvider router={router} />
   )
 }
 

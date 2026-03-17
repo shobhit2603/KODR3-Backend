@@ -23,3 +23,8 @@ export async function getMeUser() {
     const response = await axios.get("http://localhost:3000/api/auth/get-me",{withCredentials: true})
     return response.data
 }
+
+export async function logoutUser() {
+    const response = await axios.post("http://localhost:3000/api/auth/logout", {}, { withCredentials: true })
+    return response.data
+}
